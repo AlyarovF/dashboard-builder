@@ -26,6 +26,28 @@ import { v4 } from "uuid";
 import { COMPONENTS } from "../../../common/constants/builder";
 import { BuilderComponent } from "../../../common/types/common";
 
+/**
+ * Context for managing the state and actions related to the builder.
+ *
+ * @returns {object} - The state and actions for the builder context.
+ *
+ * @property {object} state - The state of the builder context.
+ * @property {BuilderComponent[]} state.blocks - The list of blocks in the builder.
+ * @property {React.RefObject<HTMLDivElement>} state.containerRef - Reference to the container element.
+ * @property {boolean} state.isDraggedOver - Indicates if an element is being dragged over the container.
+ * @property {boolean} state.isPreview - Indicates if the preview mode is active.
+ *
+ * @property {object} actions - The actions for the builder context.
+ * @property {function} actions.handleActiveBlock - Sets the active block by its ID.
+ * @property {function} actions.handleDeleteBlock - Deletes a block by its ID.
+ * @property {function} actions.handleDuplicateBlock - Duplicates a block by its ID.
+ * @property {function} actions.handleSubmit - Saves the current blocks to localStorage.
+ * @property {function} actions.handlePreview - Activates the preview mode.
+ * @property {function} actions.handleClosePreview - Deactivates the preview mode.
+ * @property {function} actions.handleDeleteAll - Deletes all blocks.
+ * @property {function} actions.resizeBlock - Resizes a block by its ID.
+ */
+
 const Context = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -105,8 +127,6 @@ const Context = () => {
 
   const handleDrop = useCallback(
     ({ source, location }: BaseEventPayload<ElementDragType>) => {
-      // console.log("source", source);
-      // console.log("location", location);
       const destination = location.current.dropTargets.length;
       if (!destination) return;
 

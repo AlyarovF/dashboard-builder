@@ -7,6 +7,26 @@ import { COMPONENTS } from "../../../../common/constants/builder";
 import { StyledMenu } from "./Sidebar.styles";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
+/**
+ * DraggableComponent is a React functional component that represents a draggable item in the sidebar.
+ * It uses the `@atlaskit/pragmatic-drag-and-drop` library to enable drag-and-drop functionality.
+ *
+ * @param {Object} props - The properties object.
+ * @param {string} props.type - The type of the draggable component.
+ * @param {string} props.label - The label of the draggable component.
+ * @param {boolean} props.collapsed - A boolean indicating whether the sidebar is collapsed.
+ * @param {React.ReactNode} props.icon - The icon to be displayed for the draggable component.
+ *
+ * @returns {JSX.Element} The rendered draggable component.
+ */
+
+/**
+ * Sidebar is a React functional component that represents the sidebar of the dashboard builder.
+ * It contains a list of draggable components and a button to toggle the collapsed state of the sidebar.
+ *
+ * @returns {JSX.Element} The rendered sidebar component.
+ */
+
 const DraggableComponent: React.FC<{
   type: string;
   label: string;

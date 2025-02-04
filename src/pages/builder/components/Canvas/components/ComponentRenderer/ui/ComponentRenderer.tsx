@@ -17,9 +17,10 @@ import useBuilderContext from "../../../../../services/builderContext";
 import { StyledCard } from "../../../ui/Canvas.styles";
 import useComponentRendererContext from "../services/componentRendererContext";
 
+// ComponentManager handles the action buttons (Duplicate, Delete) for each component
 const ComponentManager: FC<{
-  onDelete: () => void;
-  onDuplicate: () => void;
+  onDelete: () => void; // Delete action handler
+  onDuplicate: () => void; // Duplicate action handler
 }> = ({ onDelete, onDuplicate }) => {
   return (
     <Space
@@ -29,52 +30,54 @@ const ComponentManager: FC<{
         position: "absolute",
         bottom: 0,
         right: 10,
-        transform: "translate(0px, 100%)",
-        backgroundColor: theme.getDesignToken().colorPrimary,
-        borderRadius: theme.getDesignToken().borderRadius,
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        zIndex: 1300,
+        transform: "translate(0px, 100%)", // Positions buttons at the bottom-right corner
+        backgroundColor: theme.getDesignToken().colorPrimary, // Primary background color for buttons
+        borderRadius: theme.getDesignToken().borderRadius, // Rounded corners
+        borderTopLeftRadius: 0, // No top-left corner radius
+        borderTopRightRadius: 0, // No top-right corner radius
+        zIndex: 1300, // Ensure buttons are on top of other elements
       }}
     >
       <Button
         type="primary"
         size="small"
-        icon={<FontAwesomeIcon icon={faCopy} />}
-        onClick={onDuplicate}
+        icon={<FontAwesomeIcon icon={faCopy} />} // Copy icon for duplicate button
+        onClick={onDuplicate} // Trigger onDuplicate action when clicked
       />
       <Button
         type="primary"
         size="small"
-        icon={<FontAwesomeIcon icon={faTrash} />}
-        onClick={onDelete}
+        icon={<FontAwesomeIcon icon={faTrash} />} // Trash icon for delete button
+        onClick={onDelete} // Trigger onDelete action when clicked
       />
     </Space>
   );
 };
 
+// ComponentRenderer renders different components based on the type (e.g., Table, PieChart, etc.)
 const ComponentRenderer = (props: BuilderComponent) => {
-  const { active, id } = props;
+  const { active, id } = props; // Destructure props to get the active state and id
   const {
-    state: { cardRef, closestEdge, handleRef, size },
+    state: { cardRef, closestEdge, handleRef, size }, // Use context for component state (e.g., card ref, size)
   } = useComponentRendererContext();
   const {
-    actions: { handleActiveBlock, handleDeleteBlock, handleDuplicateBlock },
+    actions: { handleActiveBlock, handleDeleteBlock, handleDuplicateBlock }, // Actions to manage block state
   } = useBuilderContext();
+
   return (
     <StyledCard
-      ref={cardRef}
+      ref={cardRef} // Reference for the card element
       bordered={true}
       style={{
-        borderColor: active ? "dodgerblue" : "transparent",
-        width: size?.width || props.props.style?.width,
-        height: size?.height || props.props.style?.height,
+        borderColor: active ? "dodgerblue" : "transparent", // Border color based on active state
+        width: size?.width || props.props.style?.width, // Dynamic width
+        height: size?.height || props.props.style?.height, // Dynamic height
       }}
-      onClick={() => handleActiveBlock(id)}
+      onClick={() => handleActiveBlock(id)} // Set the block as active when clicked
       styles={{
         body: {
-          width: "100%",
-          height: "100%",
+          width: "100%", // Full width for the card body
+          height: "100%", // Full height for the card body
         },
       }}
     >
@@ -82,32 +85,34 @@ const ComponentRenderer = (props: BuilderComponent) => {
       {closestEdge && <DropIndicator edge={closestEdge} gap="12px" />}
       {active && (
         <ComponentManager
-          onDelete={() => handleDeleteBlock(id)}
-          onDuplicate={() => handleDuplicateBlock(id)}
+          onDelete={() => handleDeleteBlock(id)} // Pass delete action
+          onDuplicate={() => handleDuplicateBlock(id)} // Pass duplicate action
         />
       )}
       {/* Resize Handle */}
-      <div className="resizer" ref={handleRef} />
+      <div className="resizer" ref={handleRef} />{" "}
+      {/* Resizer for resizing the component */}
     </StyledCard>
   );
 };
 
+// renderComponent dynamically renders the correct component based on the type
 const renderComponent = (component: BuilderComponent) => {
   switch (component.type) {
     case COMPONENT_TYPES.STATISTICS:
-      return <Statistics {...component.props} />;
+      return <Statistics {...component.props} />; // Render Statistics component
     case COMPONENT_TYPES.PIE_CHART:
-      return <PieChart {...component.props} />;
+      return <PieChart {...component.props} />; // Render PieChart component
     case COMPONENT_TYPES.LINE_CHART:
-      return <LineChart {...component.props} />;
+      return <LineChart {...component.props} />; // Render LineChart component
     case COMPONENT_TYPES.BAR_CHART:
-      return <BarChart {...component.props} />;
+      return <BarChart {...component.props} />; // Render BarChart component
     case COMPONENT_TYPES.TABLE:
-      return <Table {...component.props} />;
+      return <Table {...component.props} />; // Render Table component
     case COMPONENT_TYPES.PHOTO:
-      return <Photo {...component.props} />;
+      return <Photo {...component.props} />; // Render Photo component
     default:
-      return null;
+      return null; // Return null for unsupported component types
   }
 };
 
