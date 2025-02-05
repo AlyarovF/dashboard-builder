@@ -26,37 +26,18 @@ import { v4 } from "uuid";
 import { COMPONENTS } from "../../../common/constants/builder";
 import { BuilderComponent } from "../../../common/types/common";
 
-/**
- * Context for managing the state and actions related to the builder.
- *
- * @returns {object} - The state and actions for the builder context.
- *
- * @property {object} state - The state of the builder context.
- * @property {BuilderComponent[]} state.blocks - The list of blocks in the builder.
- * @property {React.RefObject<HTMLDivElement>} state.containerRef - Reference to the container element.
- * @property {boolean} state.isDraggedOver - Indicates if an element is being dragged over the container.
- * @property {boolean} state.isPreview - Indicates if the preview mode is active.
- *
- * @property {object} actions - The actions for the builder context.
- * @property {function} actions.handleActiveBlock - Sets the active block by its ID.
- * @property {function} actions.handleDeleteBlock - Deletes a block by its ID.
- * @property {function} actions.handleDuplicateBlock - Duplicates a block by its ID.
- * @property {function} actions.handleSubmit - Saves the current blocks to localStorage.
- * @property {function} actions.handlePreview - Activates the preview mode.
- * @property {function} actions.handleClosePreview - Deactivates the preview mode.
- * @property {function} actions.handleDeleteAll - Deletes all blocks.
- * @property {function} actions.resizeBlock - Resizes a block by its ID.
- */
-
+// Context for managing builder state and actions
 const Context = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // Initialize state with saved blocks from localStorage
   const [blocks, setBlocks] = useState<BuilderComponent[]>(
     JSON.parse(localStorage.getItem("blocks") || "[]")
   );
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
 
+  // Add a new component to the builder
   const addComponent = useCallback(
     ({
       type,
@@ -84,6 +65,7 @@ const Context = () => {
     [setBlocks]
   );
 
+  // Reorder blocks within the builder
   const reorderBlock = useCallback(
     ({
       startIndex,
@@ -103,6 +85,7 @@ const Context = () => {
     [blocks]
   );
 
+  // Resize a specific block by updating its width and height
   const resizeBlock = useCallback(
     (id: string, width: number, height: number) => {
       const foundBlock = blocks.find((block) => block.id === id);
@@ -125,6 +108,7 @@ const Context = () => {
     [blocks, setBlocks]
   );
 
+  // Handle dropping of new or existing blocks in the builder
   const handleDrop = useCallback(
     ({ source, location }: BaseEventPayload<ElementDragType>) => {
       const destination = location.current.dropTargets.length;
@@ -140,7 +124,6 @@ const Context = () => {
 
         if (location.current.dropTargets.length === 2) {
           const [destinationBlockRecord] = location.current.dropTargets;
-
           const destinationBlock = destinationBlockRecord.data;
           const destinationBlockId = destinationBlock.id;
 
@@ -176,7 +159,6 @@ const Context = () => {
 
         if (location.current.dropTargets.length === 2) {
           const [destinationBlockRecord] = location.current.dropTargets;
-
           const destinationBlock = destinationBlockRecord.data;
           const destinationBlockId = destinationBlock.id;
 
@@ -204,6 +186,7 @@ const Context = () => {
     [reorderBlock, blocks, addComponent]
   );
 
+  // Toggle active state of a block
   const handleActiveBlock = useCallback(
     (id: string) => {
       setBlocks((prev) =>
@@ -216,6 +199,7 @@ const Context = () => {
     [setBlocks]
   );
 
+  // Delete a specific block
   const handleDeleteBlock = useCallback(
     (id: string) => {
       setBlocks((prev) => prev.filter((block) => block.id !== id));
@@ -223,6 +207,7 @@ const Context = () => {
     [setBlocks]
   );
 
+  // Duplicate a specific block
   const handleDuplicateBlock = useCallback(
     (id: string) => {
       const foundBlockIndex = blocks.findIndex((block) => block.id === id);
@@ -236,21 +221,20 @@ const Context = () => {
     [setBlocks, blocks]
   );
 
+  // Save blocks to localStorage
   const handleSubmit = useCallback(() => {
     localStorage.setItem("blocks", JSON.stringify(blocks));
     message.success("Saved successfully");
   }, [blocks]);
 
-  const handlePreview = () => {
-    setIsPreview(true);
-  };
+  // Preview handlers
+  const handlePreview = () => setIsPreview(true);
+  const handleClosePreview = () => setIsPreview(false);
 
-  const handleClosePreview = () => {
-    setIsPreview(false);
-  };
-
+  // Delete all blocks
   const handleDeleteAll = () => setBlocks([]);
 
+  // Initialize drag-and-drop functionality and auto-scroll
   useEffect(() => {
     const container = containerRef.current;
     invariant(container);
@@ -262,17 +246,12 @@ const Context = () => {
       }),
       dropTargetForElements({
         element: container,
-        onDragStart: (args) => {
-          setIsDraggedOver(true);
-        },
-        onDragEnter: (args) => {
-          setIsDraggedOver(true);
-        },
+        onDragStart: () => setIsDraggedOver(true),
+        onDragEnter: () => setIsDraggedOver(true),
         onDragLeave: () => setIsDraggedOver(false),
         onDrop: () => setIsDraggedOver(false),
         getData: () => ({ id: "container" }),
         canDrop: () => !isPreview,
-        // getIsSticky: () => true,
       }),
       autoScrollForElements({
         element: container,
@@ -281,7 +260,7 @@ const Context = () => {
         }),
       })
     );
-  }, [handleDrop]);
+  }, [handleDrop, isPreview]);
 
   return {
     state: { blocks, containerRef, isDraggedOver, isPreview },

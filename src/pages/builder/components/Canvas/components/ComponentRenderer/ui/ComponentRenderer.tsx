@@ -61,6 +61,7 @@ const ComponentRenderer = (props: BuilderComponent) => {
     state: { cardRef, closestEdge, handleRef, size }, // Use context for component state (e.g., card ref, size)
   } = useComponentRendererContext();
   const {
+    state: { isPreview },
     actions: { handleActiveBlock, handleDeleteBlock, handleDuplicateBlock }, // Actions to manage block state
   } = useBuilderContext();
 
@@ -90,7 +91,7 @@ const ComponentRenderer = (props: BuilderComponent) => {
         />
       )}
       {/* Resize Handle */}
-      <div className="resizer" ref={handleRef} />{" "}
+      {!isPreview && <div className="resizer" ref={handleRef} />}
       {/* Resizer for resizing the component */}
     </StyledCard>
   );

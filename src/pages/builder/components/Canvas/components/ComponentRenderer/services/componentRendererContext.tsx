@@ -83,9 +83,12 @@ const Context = ({ id }: BuilderComponent) => {
         onDrop: () => {
           setClosestEdge(null); // Reset closest edge on drop
         },
+        canDrop() {
+          return !isPreview; // Allow dragging by default
+        },
       })
     );
-  }, [id]); // Run this effect when `id` changes
+  }, [id, isPreview]); // Run this effect when `id` changes
 
   // UseEffect for setting up the draggable resize handle
   useEffect(() => {

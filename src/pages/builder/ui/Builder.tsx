@@ -12,33 +12,6 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import useBuilderContext from "../services/builderContext";
 import { Container } from "./Builder.styles";
 
-/**
- * Builder component that provides the main layout and functionality for the dashboard builder.
- * It uses the context from `useBuilderContext` to manage state and actions.
- *
- * @returns {JSX.Element} The Builder component.
- *
- * @component
- * @example
- * return (
- *   <Builder />
- * )
- *
- * @remarks
- * The component includes a sidebar, a container for the canvas, and a group of floating buttons
- * for actions like preview, delete all, and save. The layout and styles are dynamically adjusted
- * based on the state values such as `isDraggedOver` and `isPreview`.
- *
- * @hook
- * The component uses the `useBuilderContext` hook to access the state and actions:
- * - `containerRef`: Reference to the main layout container.
- * - `isDraggedOver`: Boolean indicating if an item is being dragged over the container.
- * - `isPreview`: Boolean indicating if the preview mode is active.
- * - `handleSubmit`: Function to handle the save action.
- * - `handlePreview`: Function to handle the preview action.
- * - `handleClosePreview`: Function to handle closing the preview.
- * - `handleDeleteAll`: Function to handle deleting all items.
- */
 const Builder: React.FC = () => {
   const {
     state: { containerRef, isDraggedOver, isPreview },
