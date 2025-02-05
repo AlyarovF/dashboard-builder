@@ -209,7 +209,7 @@ const Context = () => {
       setBlocks((prev) =>
         prev.map((block) => ({
           ...block,
-          active: block.id === id,
+          active: block.id === id ? !block.active : false,
         }))
       );
     },
@@ -258,6 +258,7 @@ const Context = () => {
     return combine(
       monitorForElements({
         onDrop: handleDrop,
+        canMonitor: () => !isPreview,
       }),
       dropTargetForElements({
         element: container,
@@ -270,6 +271,7 @@ const Context = () => {
         onDragLeave: () => setIsDraggedOver(false),
         onDrop: () => setIsDraggedOver(false),
         getData: () => ({ id: "container" }),
+        canDrop: () => !isPreview,
         // getIsSticky: () => true,
       }),
       autoScrollForElements({

@@ -33,6 +33,7 @@ const Context = ({ id }: BuilderComponent) => {
   const initialSize = useRef({ width: 0, height: 0 }); // Initial size of the card before resizing
 
   const {
+    state: { isPreview },
     actions: { resizeBlock },
   } = useBuilderContext(); // Destructure resize action from builder context
 
@@ -45,7 +46,7 @@ const Context = ({ id }: BuilderComponent) => {
       draggable({
         element, // Card element for dragging
         canDrag() {
-          return true; // Allow dragging by default
+          return !isPreview; // Allow dragging by default
         },
         getInitialData() {
           return { type: "block", id }; // Returns data when drag starts
